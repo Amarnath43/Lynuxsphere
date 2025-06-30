@@ -25,7 +25,7 @@ const USER_ID = import.meta.env.VITE_EMAILJS_USER_ID;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     
     const templateParams = {
@@ -35,17 +35,16 @@ const USER_ID = import.meta.env.VITE_EMAILJS_USER_ID;
       message: formData.message
     };
 
-    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID)
-      .then(() => {
-        setLoading(true);
-        toast.success('Thank you for your message! We will get back to you soon.');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      })
-      .catch((error) => {
-        setLoading(false)
-        console.error('EmailJS Error:', error);
-        toast.error('Failed to send message. Please try again later.');
-      });
+    try {
+    await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID);
+    toast.success('Message sent successfully!');
+    setFormData({ name: '', email: '', subject: '', message: '' });
+  } catch (error: any) {
+    console.error('EmailJS Error:', error);
+    toast.error(`Failed to send. ${error?.text || 'Try again later.'}`);
+  } finally {
+    setLoading(false);
+  }
 
     
     
