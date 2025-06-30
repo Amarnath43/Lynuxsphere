@@ -35,9 +35,11 @@ const USER_ID = import.meta.env.VITE_EMAILJS_USER_ID;
       message: formData.message
     };
 
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID)
     try {
+      setLoading(true)
     await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID);
-    toast.success('Message sent successfully!');
+    toast.success('Thank you for your message! We will get back to you soon.');
     setFormData({ name: '', email: '', subject: '', message: '' });
   } catch (error: any) {
     console.error('EmailJS Error:', error);
